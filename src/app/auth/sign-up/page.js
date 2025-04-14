@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-import Link from 'next/link' // import Link for navigation
+import Link from 'next/link' 
+import { signup } from '@/services/auth'
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -18,8 +19,11 @@ const SignUp = () => {
     })
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
+    const response = await signup({email:form.email , password: form.password})
+    console.log(form)
+
   }
 
   return (
