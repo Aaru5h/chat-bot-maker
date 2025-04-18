@@ -1,6 +1,7 @@
 'use client'
 import React,{useState} from 'react'
 import Link from 'next/link' 
+import { login } from '@/services/auth'
 
 const Login = () => {
   const [form,setForm] = useState({
@@ -18,8 +19,19 @@ const Login = () => {
     })
   }
 
-  function handleSubmit(e){
-    e.preventDefault()
+  async function handleSubmit(e){
+    
+    try{
+      e.preventDefault()
+      const response = await login({email:form.email , password: form.password})
+      const {token} = response;
+      localStorage.setItem("token", token)
+    }
+
+    catch(err){
+      alert(err)
+      console.log(err)
+    }
   }
 
   return (

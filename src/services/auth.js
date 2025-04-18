@@ -13,7 +13,7 @@ export const signup = async ({email,password}) => {
 }
 
 export const login = async ({email,password})=>{
-    const response = await fetch("/api/auth/signup", {
+    const response = await fetch("/api/auth/login", {
         headers: {
             "Content-type": "application/json",
         },
