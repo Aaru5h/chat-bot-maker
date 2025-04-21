@@ -43,7 +43,7 @@ const Dashboard = () => {
 
       <input
         type='text'
-        placeholder='Chatbot name *'
+        placeholder='Chatbot name'
         value={name}
         onChange={(e) => setName(e.target.value)}
         style={{
@@ -56,7 +56,7 @@ const Dashboard = () => {
       />
 
       <textarea
-        placeholder='Context *'
+        placeholder='Context'
         rows={5}
         value={context}
         onChange={(e) => setContext(e.target.value)}
