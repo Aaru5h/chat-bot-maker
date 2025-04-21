@@ -1,9 +1,10 @@
 'use client';
 import { AuthContext } from '@/context/auth';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createChatBot } from '@/services/chatbot';
 import { getToken } from '@/helpers/auth';
+import { getChatbots } from '@/services/chatbot';
 
 const Dashboard = () => {
   const globalData = useContext(AuthContext);
@@ -32,6 +33,12 @@ const Dashboard = () => {
     setContext('');
     setError('');
   };
+
+  useEffect(()=>{
+    getChatbots({token: getToken()}).then((res) => {
+      setChatbots(res)
+    })
+},[])
 
   if (!isLogged) {
     return <>Please Login first</>;
