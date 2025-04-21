@@ -26,3 +26,5 @@ export const login = async ({email,password})=>{
     return await response.json()
 }
 
+
+

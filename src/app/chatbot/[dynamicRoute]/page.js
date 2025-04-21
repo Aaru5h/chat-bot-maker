@@ -1,10 +1,9 @@
-'use client'
+"use client"
+import { useParams } from 'next/navigation'
 import React from 'react'
 
-const Page = () => {
-  return (
-    <div>Dynamic Route</div>
-  )
+export default function Page(){
+  const params = useParams();
+  console.log(params);
+  return <div>{params.dynamicRoute}</div>
 }
-
-export default Page

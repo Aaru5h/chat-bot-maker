@@ -42,7 +42,7 @@ export async function POST(req) {
 }
 
 const registerToken = async (email) => {
-  const token = new Date().toISOString() + "." + email;
+  const token = new Date().toISOString() + "#@#" + email;
   const file = path.join(dbAddress, "tokenRegistry.json");
   await postData(file, token);
   return token;

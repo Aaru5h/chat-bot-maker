@@ -1,6 +1,9 @@
 'use client';
 import { AuthContext } from '@/context/auth';
 import React, { useContext, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createChatBot } from '@/services/chatbot';
+import { getToken } from '@/helpers/auth';
 
 const Dashboard = () => {
   const globalData = useContext(AuthContext);
@@ -11,7 +14,9 @@ const Dashboard = () => {
   const [chatbots, setChatbots] = useState([]);
   const [error, setError] = useState('');
 
-  const handleAddChatbot = () => {
+  const router = useRouter()
+
+  const handleAddChatbot = async () => {
     if (name.trim() === '' || context.trim() === '') {
       setError('Both name and context are required.');
       return;
@@ -19,6 +24,10 @@ const Dashboard = () => {
 
     const newBot = { name, context };
     setChatbots([...chatbots, newBot]);
+
+    await createChatBot({name,context,token: getToken()})
+
+
     setName('');
     setContext('');
     setError('');
@@ -87,9 +96,35 @@ const Dashboard = () => {
           <div key={index} style={{ marginBottom: '1rem' }}>
             <h4>{bot.name}</h4>
             <p>{bot.context}</p>
+            <button 
+            onClick={()=> router.push(`/chatbot/${bot.name}`)} 
+            className='chat-button'
+            style={{
+              padding: '0.5rem 1.2rem',
+              background: 'linear-gradient(to right, #0070f3, #0051a3)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '0.95rem',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 10px rgba(0, 112, 243, 0.3)'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'scale(1)';
+            }}
+            >
+              visit
+            </button>
           </div>
         ))}
       </div>
+
+      
     </div>
   );
 };

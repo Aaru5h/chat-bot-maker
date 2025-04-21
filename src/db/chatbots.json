@@ -1,0 +1,16 @@
+[
+  {
+    "name": "chat",
+    "context": "chat"
+  },
+  {
+    "name": "chat",
+    "context": "chat here",
+    "creator": "mestrikerocks@gmail.com"
+  },
+  {
+    "name": "newChat",
+    "context": "naye naye chat karo",
+    "creator": "mestrikerocks@gmail.com"
+  }
+]
