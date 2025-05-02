@@ -22,5 +22,23 @@
     "name": "newChat",
     "context": "hekjgblkqejb",
     "creator": "bytebros013@gmail.com"
+  },
+  {
+    "name": "Aarush",
+    "context": "Blah blah blah",
+    "creator": "mestrikerocks@gmail.com"
+  },
+  {
+    "name": "Divy",
+    "context": "hi\nabcd\nefgh\nblah blah",
+    "creator": "mestrikerocks@gmail.com"
+  },
+  {
+    "name": "chat",
+    "context": "chat with me like I am a friend"
+  },
+  {
+    "name": "friend",
+    "context": "Chat with me like I am a good friend of yours and we chat on a regular basis"
   }
 ]

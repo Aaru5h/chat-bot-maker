@@ -43,3 +43,20 @@ export const getAllChatbots = async () => {
   const x = await response.json();
   return x
 };
+
+
+export const getChatbotByName = async ({ name, token }) => {
+  const response = await fetch(`/api/chatbot/getByChatbotName?name=${name}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    const { err } = await response.json();
+    console.log(err);
+    throw new Error(err || "Error getting chatbot");
+  }
+  return response.json();
+};
