@@ -70,8 +70,22 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Registration error:', error);
+    
+    // More specific error handling
+    let errorMessage = 'Internal server error';
+    if (error.message?.includes('MONGODB_URI')) {
+      errorMessage = 'Database configuration error';
+    } else if (error.message?.includes('MongoError')) {
+      errorMessage = 'Database connection error';
+    } else if (error.name === 'ValidationError') {
+      errorMessage = 'Invalid input data';
+    }
+    
     return NextResponse.json(
-      { message: 'Internal server error' },
+      { 
+        message: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     );
   }
