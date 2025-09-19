@@ -1,12 +1,6 @@
 {
   "version": 2,
   "name": "chatbot-maker",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
