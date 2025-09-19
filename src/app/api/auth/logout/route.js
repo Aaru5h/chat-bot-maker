@@ -1,20 +1,12 @@
-import path from "path";
-
-import { getData, putData } from "@/app/api/utils";
-import dbAddress  from "@/db";
-
-const tokenFilePath = path.join(dbAddress, "tokenRegistry.json");
-
 export async function POST(req) {
   try {
-    const { token } = await req.json();
-
-    const tokens = await getData(tokenFilePath);
-    const updatedTokens = tokens.filter(
-      (existingToken) => existingToken !== token
-    );
-
-    await putData(tokenFilePath, updatedTokens);
+    // Read body if provided, but do not rely on or persist server-side session/token state.
+    // Stateless logout: client clears its token; server acknowledges.
+    try {
+      await req.json();
+    } catch (_) {
+      // ignore empty/invalid JSON
+    }
 
     return new Response(
       JSON.stringify({ message: "User logged out successfully" }),
@@ -27,9 +19,13 @@ export async function POST(req) {
     );
   } catch (error) {
     console.error("Error during logout:", error);
-    return new Response(JSON.stringify({ err: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    // Still respond 200 to let client clear token reliably
+    return new Response(
+      JSON.stringify({ message: "User logged out successfully" }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
