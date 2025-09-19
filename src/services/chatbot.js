@@ -66,3 +66,20 @@ export const getChatbotByName = async ({ name, token }) => {
   }
   return response.json();
 };
+
+export const deleteChatbot = async ({ chatbotName, token }) => {
+  const response = await fetch("/api/chatbot/delete", {
+    method: "DELETE",
+    body: JSON.stringify({ chatbotName, token }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.message || "Error deleting chatbot");
+  }
+  
+  return response.json();
+};

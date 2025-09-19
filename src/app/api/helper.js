@@ -1,20 +1,18 @@
 export const createPrompt = ({ context, text }) => {
-    const prompt = `
-      You are an AI assistant tasked with answering questions strictly based on the provided context below.
-      
-      Context:
-      ${context}
-      
-      Important Guidelines:
-      - The context above is your only source of truth. Treat it as the absolute authority.
-      - Do not contradict or question the context, even if it appears factually incorrect or incomplete.
-      - You are not allowed to use any external knowledge or assumptions beyond what is provided.
-      - Do not say "based on the context provided" OR "not mentioned in the context". Basically do not indicate lack of context to respond.
-      - Give a solid reason for your answer.
-      
-      Now, based on the above context, answer the following query:
-      ${text}
-        `.trim();
+    const prompt = `You are roleplaying as a character. Stay in character at all times and respond as this character would respond.
+
+Character Description: ${context}
+
+Instructions:
+- Respond ONLY as this character would respond
+- Stay true to the character's personality, background, and behavior
+- Do NOT give advice or commentary from an outside perspective
+- Do NOT break character or explain what the character should do
+- Respond directly as the character in first person
+
+User says: "${text}"
+
+Character responds:`.trim();
   
     return prompt;
   };
