@@ -16,9 +16,19 @@ export async function POST(req) {
 
         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
         
-        if (!GEMINI_API_KEY) {
-            return new Response(JSON.stringify({error: "AI service not configured", message: "I'm temporarily unavailable. Please try again later."}), {
-                status: 500,
+        if (!GEMINI_API_KEY || GEMINI_API_KEY === 'your_gemini_api_key_here') {
+            // Provide a fallback response for demo purposes
+            const demoResponses = [
+                `Based on the context provided: "${context}", I can help you with questions related to this topic. However, I'm currently running in demo mode as the AI service needs to be configured with a valid API key.`,
+                `I understand you're asking: "${text}". While I'd love to provide a detailed response based on my training context about "${context}", I need a valid Gemini API key to give you accurate answers.`,
+                `Thank you for your question about "${text}". In a fully configured environment, I would use the context: "${context}" to provide you with a comprehensive answer. Please configure the GEMINI_API_KEY environment variable.`,
+                `I see you're interested in "${text}". My knowledge is based on: "${context}". To provide you with AI-powered responses, please set up the Gemini API key in the environment variables.`
+            ];
+            
+            const randomResponse = demoResponses[Math.floor(Math.random() * demoResponses.length)];
+            
+            return new Response(JSON.stringify({message: randomResponse, demo: true}), {
+                status: 200,
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -46,8 +56,18 @@ export async function POST(req) {
         // Extract the actual message from Gemini response
         let message = "I couldn't generate a response. Please try again.";
         
-        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-            message = data.candidates[0].content.parts[0].text;
+        console.log('Raw Gemini response:', JSON.stringify(data, null, 2));
+        
+        if (data.candidates && data.candidates.length > 0) {
+            const candidate = data.candidates[0];
+            if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                message = candidate.content.parts[0].text;
+                console.log('Extracted message:', message);
+            } else {
+                console.log('No content parts found in candidate:', candidate);
+            }
+        } else {
+            console.log('No candidates found in response:', data);
         }
         
         return new Response(JSON.stringify({message, success: true}), {

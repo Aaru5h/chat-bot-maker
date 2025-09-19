@@ -138,7 +138,7 @@ const Dashboard = () => {
         <div className="card">
           <div className="card-header">
             <h2 className="card-title">Your Chatbots</h2>
-            <p style={{ color: '#6b7280', marginBottom: '0' }}>
+            <p style={{ color: '#94a3b8', marginBottom: '0' }}>
               {chatbots.length} chatbot{chatbots.length !== 1 ? 's' : ''} created
             </p>
           </div>
@@ -146,7 +146,7 @@ const Dashboard = () => {
           {isLoadingChatbots ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>
               <div className="loading" style={{ margin: '0 auto', marginBottom: '1rem' }}></div>
-              <p style={{ color: '#6b7280' }}>Loading your chatbots...</p>
+              <p style={{ color: '#94a3b8' }}>Loading your chatbots...</p>
             </div>
           ) : chatbots.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -163,9 +163,10 @@ const Dashboard = () => {
               {chatbots.map((bot, index) => (
                 <div key={index} style={{
                   padding: '1.5rem',
-                  border: '2px solid #e5e7eb',
+                  border: '1px solid rgba(71, 85, 105, 0.2)',
                   borderRadius: '12px',
-                  backgroundColor: '#f8fafc',
+                  backgroundColor: 'rgba(30, 41, 59, 0.4)',
+                  backdropFilter: 'blur(12px)',
                   transition: 'all 0.3s ease'
                 }}>
                   <div style={{ marginBottom: '1rem' }}>
