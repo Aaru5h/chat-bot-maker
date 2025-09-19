@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import Link from 'next/link' 
-import { signup } from '@/services/auth'
+import { register } from '@/services/auth'
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -21,7 +21,7 @@ const SignUp = () => {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    const response = await signup({email:form.email , password: form.password})
+    const response = await register({email:form.email , password: form.password, name: form.email.split('@')[0]})
     console.log(form)
 
   }

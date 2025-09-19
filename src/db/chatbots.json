@@ -40,5 +40,9 @@
   {
     "name": "friend",
     "context": "Chat with me like I am a good friend of yours and we chat on a regular basis"
+  },
+  {
+    "name": "hola",
+    "context": "it will talk in spanish\n"
   }
 ]

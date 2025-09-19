@@ -25,8 +25,8 @@ export default function Page(){
     const res = await askGemini({text: text, context: botDetails.context})
 
     const data = await res.json()
-    const gotMesssage = data.response.candidates[0].content.parts[0].text
-    console.log(gotMesssage)
+    // const gotMesssage = data.response.candidates[0].content.parts[0].text
+    console.log(data)
 
     setText('')
   }

@@ -46,7 +46,7 @@ const Login = () => {
       </form>
 
       <p style={{ marginTop: '1rem' }}>
-        If you don't have an account{' '}
+        If you don&apos;t have an account{' '}
         <Link href="/auth/sign-up" style={{ color: 'blue', textDecoration: 'underline' }}>
           Sign Up
         </Link>
