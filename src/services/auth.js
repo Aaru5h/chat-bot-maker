@@ -1,5 +1,5 @@
 export const register = async ({email, password, name}) => {
-    const response = await fetch("/api/auth/signup", {
+    const response = await fetch("/api/auth/register", {
         headers: {
             "Content-type": "application/json",
         },

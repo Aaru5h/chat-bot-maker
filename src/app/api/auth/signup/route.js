@@ -1,28 +1,17 @@
-import path from "path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getCollection } from '@/lib/mongodb';
 
-import { getData, postData, putData } from "@/app/api/utils";
-import dbAddress from "@/db";
-
-const filePath = path.join(dbAddress, "users.json");
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-const registerToken = async (email) => {
-  const token = new Date().toISOString() + "#@#" + email;
-  const file = path.join(dbAddress, "tokenRegistry.json");
-  await postData(file, token);
-  return token;
-};
 
 export async function POST(req) {
   try {
     const { email, password, name } = await req.json();
 
     // Validation
-    if (!email || !password) {
+    if (!email || !password || !name) {
       return new Response(
-        JSON.stringify({ message: "Email and password are required" }),
+        JSON.stringify({ message: "Email, password, and name are required" }),
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
@@ -40,9 +29,11 @@ export async function POST(req) {
       );
     }
 
-    const users = await getData(filePath);
-
-    const existingUser = users.find((user) => user.email === email);
+    // Get users collection
+    const usersCollection = await getCollection('users');
+    
+    // Check if user already exists
+    const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
       return new Response(
         JSON.stringify({ message: "User with this email already exists" }),
@@ -58,19 +49,18 @@ export async function POST(req) {
 
     // Create new user object
     const newUser = {
-      id: Date.now().toString(),
       email,
-      name: name || email.split('@')[0],
+      name,
       password: hashedPassword,
-      createdAt: new Date().toISOString()
+      createdAt: new Date()
     };
 
-    await postData(filePath, newUser);
+    // Insert user into database
+    const result = await usersCollection.insertOne(newUser);
 
-    // Generate tokens
-    const legacyToken = await registerToken(email);
+    // Generate JWT token
     const jwtToken = jwt.sign(
-      { userId: newUser.id, email: newUser.email },
+      { userId: result.insertedId.toString(), email: newUser.email },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -78,10 +68,10 @@ export async function POST(req) {
     return new Response(
       JSON.stringify({ 
         message: "User registered successfully",
-        token: legacyToken,
+        token: jwtToken, // Using JWT token for both fields
         jwt: jwtToken,
         user: {
-          id: newUser.id,
+          id: result.insertedId.toString(),
           email: newUser.email,
           name: newUser.name
         }

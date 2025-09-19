@@ -1,26 +1,22 @@
-import { getAllChatBots, verifyToken } from "../../utils";
+import { getCollection } from '@/lib/mongodb';
 
 export async function GET(req) {
-  // try {
-  //   const authHeader = req.headers.get("authorization");
-  //   const accessToken = authHeader?.split(" ")[1];
-
-  //   if (!accessToken || !verifyToken(accessToken)) {
-  //     return new Response(JSON.stringify({ err: "Unauthorized" }), {
-  //       status: 401,
-  //       headers: { "Content-Type": "application/json" },
-  //     });
-  //   }
-    const data = await getAllChatBots();
-    return new Response(JSON.stringify(data), {
+  try {
+    // Get chatbots collection
+    const chatbotsCollection = await getCollection('chatbots');
+    
+    // Get all chatbots (public endpoint for explore page)
+    const chatbots = await chatbotsCollection.find({}).toArray();
+    
+    return new Response(JSON.stringify(chatbots), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-//   } catch (err) {
-//     console.log(err);
-//     return new Response(JSON.stringify({ err: "Internal Server Error" }), {
-//       status: 500,
-//       headers: { "Content-Type": "application/json" },
-//     });
-//   }
- }
+  } catch (err) {
+    console.error('Get all chatbots error:', err);
+    return new Response(JSON.stringify({ err: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}

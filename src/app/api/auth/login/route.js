@@ -1,11 +1,7 @@
-import path from "path";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getCollection } from '@/lib/mongodb';
 
-import { getData, postData } from "@/app/api/utils";
-import dbAddress from "@/db";
-
-const filePath = path.join(dbAddress, "users.json");
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function POST(req) {
@@ -20,8 +16,9 @@ export async function POST(req) {
       });
     }
     
-    const users = await getData(filePath);
-    const existingUser = users.find((user) => user.email === email);
+    // Get users collection
+    const usersCollection = await getCollection('users');
+    const existingUser = await usersCollection.findOne({ email });
     
     if (!existingUser) {
       return new Response(JSON.stringify({ message: "Invalid email or password" }), {
@@ -48,20 +45,20 @@ export async function POST(req) {
       });
     }
     
-    // Generate both types of tokens for compatibility
-    const legacyToken = await registerToken(email);
+    // Generate JWT token (no longer using legacy token system)
     const jwtToken = jwt.sign(
-      { userId: existingUser.id || existingUser.email, email: existingUser.email },
+      { userId: existingUser._id.toString(), email: existingUser.email },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
     
     return new Response(
       JSON.stringify({ 
-        token: legacyToken, // Keep legacy token for existing code
+        token: jwtToken, // Using JWT token for both fields for compatibility
         jwt: jwtToken,
         message: "User logged in successfully",
         user: {
+          id: existingUser._id.toString(),
           email: existingUser.email,
           name: existingUser.name || existingUser.email.split('@')[0]
         }
@@ -74,17 +71,10 @@ export async function POST(req) {
       }
     );
   } catch (err) {
-    console.log(err);
+    console.error('Login error:', err);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
 }
-
-const registerToken = async (email) => {
-  const token = new Date().toISOString() + "#@#" + email;
-  const file = path.join(dbAddress, "tokenRegistry.json");
-  await postData(file, token);
-  return token;
-};

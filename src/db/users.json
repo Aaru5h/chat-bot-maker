@@ -6,5 +6,19 @@
   {
     "email": "bytebros013@gmail.com",
     "password": "1234567890"
+  },
+  {
+    "id": "1758282833988",
+    "email": "aarush@example.com",
+    "name": "Aarush",
+    "password": "$2b$12$NtXo38/0V.cgy0E/MADO8.X2IN7uA/uWK3jW337yaBsgZaCecnakW",
+    "createdAt": "2025-09-19T11:53:53.988Z"
+  },
+  {
+    "id": "1758283455763",
+    "email": "admin@example.com",
+    "name": "Somu",
+    "password": "$2b$12$yz0eF.0R/8heQoJjU.JlqOar7eh5A18YCrqrG0pSNt1upJg2kF7yW",
+    "createdAt": "2025-09-19T12:04:15.763Z"
   }
 ]

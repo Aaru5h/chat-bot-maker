@@ -1,39 +1,9 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { getCollection } from '@/lib/mongodb';
 
-const dbPath = path.join(process.cwd(), 'src/db');
-const usersFile = path.join(dbPath, 'users.json');
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-// Ensure db directory and users file exist
-function ensureDbExists() {
-  if (!fs.existsSync(dbPath)) {
-    fs.mkdirSync(dbPath, { recursive: true });
-  }
-  if (!fs.existsSync(usersFile)) {
-    fs.writeFileSync(usersFile, JSON.stringify([]));
-  }
-}
-
-// Read users from file
-function readUsers() {
-  ensureDbExists();
-  try {
-    const data = fs.readFileSync(usersFile, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
-
-// Write users to file
-function writeUsers(users) {
-  ensureDbExists();
-  fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
-}
 
 export async function POST(request) {
   try {
@@ -54,9 +24,11 @@ export async function POST(request) {
       );
     }
 
+    // Get users collection
+    const usersCollection = await getCollection('users');
+    
     // Check if user already exists
-    const users = readUsers();
-    const existingUser = users.find(user => user.email === email);
+    const existingUser = await usersCollection.findOne({ email });
 
     if (existingUser) {
       return NextResponse.json(
@@ -70,19 +42,18 @@ export async function POST(request) {
 
     // Create new user
     const newUser = {
-      id: Date.now().toString(),
       email,
       name,
       password: hashedPassword,
-      createdAt: new Date().toISOString()
+      createdAt: new Date()
     };
 
-    users.push(newUser);
-    writeUsers(users);
-
+    // Insert user into database
+    const result = await usersCollection.insertOne(newUser);
+    
     // Generate JWT token
     const token = jwt.sign(
-      { userId: newUser.id, email: newUser.email },
+      { userId: result.insertedId.toString(), email: newUser.email },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -91,7 +62,7 @@ export async function POST(request) {
       message: 'User registered successfully',
       token,
       user: {
-        id: newUser.id,
+        id: result.insertedId.toString(),
         email: newUser.email,
         name: newUser.name
       }

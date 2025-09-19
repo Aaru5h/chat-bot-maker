@@ -162,7 +162,7 @@ const Dashboard = () => {
           
           {isLoadingChatbots ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>
-              <div className="loading" style={{ margin: '0 auto', marginBottom: '1rem' }}></div>
+              <div className="loading" style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: '1rem' }}></div>
               <p style={{ color: '#94a3b8' }}>Loading your chatbots...</p>
             </div>
           ) : chatbots.length === 0 ? (

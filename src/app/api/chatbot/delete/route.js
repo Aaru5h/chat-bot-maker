@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getData, putData, verifyToken } from '../../utils';
-import dbAddress from '@/db';
-import path from 'path';
+import jwt from 'jsonwebtoken';
+import { getCollection } from '@/lib/mongodb';
 
-const filePath = path.join(dbAddress, 'chatbots.json');
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function DELETE(request) {
   try {
@@ -17,44 +16,40 @@ export async function DELETE(request) {
       );
     }
 
-    // Verify token
-    const isValidToken = await verifyToken(token);
-    if (!isValidToken) {
+    // Verify JWT token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (jwtError) {
       return NextResponse.json(
         { message: 'Invalid or expired token' },
         { status: 401 }
       );
     }
 
-    // Get current chatbots
-    const chatbots = await getData(filePath);
+    // Get chatbots collection
+    const chatbotsCollection = await getCollection('chatbots');
     
     // Find the chatbot to delete
-    const chatbotIndex = chatbots.findIndex(bot => bot.name === chatbotName);
+    const chatbot = await chatbotsCollection.findOne({ name: chatbotName });
     
-    if (chatbotIndex === -1) {
+    if (!chatbot) {
       return NextResponse.json(
         { message: 'Chatbot not found' },
         { status: 404 }
       );
     }
 
-    // Get user email from token (simple extraction from our token format)
-    const userEmail = token.split('#@#')[1];
-    
     // Check if user owns this chatbot
-    if (chatbots[chatbotIndex].creator !== userEmail) {
+    if (chatbot.creator !== decoded.email) {
       return NextResponse.json(
         { message: 'Unauthorized: You can only delete your own chatbots' },
         { status: 403 }
       );
     }
 
-    // Remove the chatbot
-    chatbots.splice(chatbotIndex, 1);
-    
-    // Save the updated data
-    await putData(filePath, chatbots);
+    // Delete the chatbot
+    await chatbotsCollection.deleteOne({ name: chatbotName, creator: decoded.email });
 
     return NextResponse.json(
       { message: 'Chatbot deleted successfully' },
