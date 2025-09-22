@@ -32,7 +32,7 @@ const ExplorePage = () => {
     <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
       {/* Header Section */}
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: '800', color: '#1f2937', marginBottom: '1rem' }}>
+        <h1 style={{ fontSize: '3rem', fontWeight: '800', color: 'white', marginBottom: '1rem' }}>
           🔍 Explore Chatbots
         </h1>
         <p style={{ fontSize: '1.25rem', color: '#6b7280', maxWidth: '600px', margin: '0 auto', marginBottom: '2rem' }}>
@@ -99,7 +99,7 @@ const ExplorePage = () => {
                 <div style={{ marginBottom: '1.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                     <span style={{ fontSize: '1.5rem' }}>🤖</span>
-                    <h3 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', margin: '0' }}>
+                    <h3 style={{ fontSize: '1.5rem', fontWeight: '700', color: 'white', margin: '0' }}>
                       {bot.name}
                     </h3>
                   </div>
